@@ -29,6 +29,7 @@ def check(dir):
     outputs.sort()
     correct_outputs.sort()
     for i in range(len(outputs)):
+        print ('checking %s against %s' % (outputs[i], correct_outputs[i]))
         process = subprocess.Popen(['diff', outputs[i], correct_outputs[i]], stdout=subprocess.PIPE)
         out, err = process.communicate()
         if out:
@@ -37,6 +38,10 @@ def check(dir):
                                                                       out))
             return
     print( "Check returned successful.")
+
+def cleanup(res_dir):
+    for f in os.listdir(res_dir):
+        os.remove(os.path.join(res_dir, f))
 
 if __name__ == '__main__':
     script_dir = os.getcwd()
@@ -54,11 +59,12 @@ if __name__ == '__main__':
     rename(med_dir, med_files, results_dir, 'med')
     rename(large_dir, large_files, results_dir, 'large')
     
-    #for in_file in os.listdir(results_dir):
-    #    if '.in' in in_file:
-    #        main(os.path.join(results_dir, in_file))
+    for in_file in os.listdir(results_dir):
+        if '.in' in in_file:
+            main(os.path.join(results_dir, in_file))
             
     check(results_dir)
-        
+    
+    cleanup(results_dir)     
     
     
